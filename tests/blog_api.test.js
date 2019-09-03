@@ -45,11 +45,17 @@ test('all blogs are returned', async () => {
 test('a specific title is within the returned blogs', async () => {
   const response = await api.get('/api/blogs')
 
-  const contents = response.body.map(r => r.title)
+  const titles = response.body.map(r => r.title)
 
-  expect(contents).toContain(
+  expect(titles).toContain(
     'React patterns'
   )
+})
+
+test('blogs have field "id"', async () => {
+  const response = await api.get('/api/blogs')
+
+  response.body.forEach( (blog) => { expect(blog.id).toBeDefined() })
 })
 
 afterAll(() => {
