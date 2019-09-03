@@ -141,3 +141,29 @@ describe('most blogs', () => {
       })
   })
 })
+
+describe('most likes', () => {
+  test('of empty list is NaN', () => {
+    const result = listHelper.mostLikes(listWithNoBlogs)
+    expect(result).toEqual(NaN)
+  })
+
+  test('when list has only one blog equals that', () => {
+    const result = listHelper.mostLikes(listWithOneBlog)
+    expect(result).toEqual(
+      {
+        author: 'Edsger W. Dijkstra',
+        likes: 5
+      }
+    )
+  })
+
+  test('of a bigger list is calculated right', () => {
+    const result = listHelper.mostLikes(listWithManyBlogs)
+    expect(result).toEqual(
+      {
+        author: 'Edsger W. Dijkstra',
+        likes: 17
+      })
+  })
+})
