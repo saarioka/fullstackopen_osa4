@@ -1,5 +1,7 @@
 const listHelper = require('../utils/list_helper')
 
+const listWithNoBlogs = []
+
 const listWithOneBlog = [
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -64,18 +66,14 @@ const listWithManyBlogs = [
 
 describe('dummy', () => {
   test('dummy returns one', () => {
-    const blogs = []
-
-    const result = listHelper.dummy(blogs)
+    const result = listHelper.dummy(listWithNoBlogs)
     expect(result).toBe(1)
   })
 })
 
 describe('total likes', () => {
   test('of empty list is zero', () => {
-    const blogs = []
-
-    const result = listHelper.totalLikes(blogs)
+    const result = listHelper.totalLikes(listWithNoBlogs)
     expect(result).toBe(0)
   })
 
@@ -85,7 +83,6 @@ describe('total likes', () => {
   })
 
   test('of a bigger list is calculated right', () => {
-
     const result = listHelper.totalLikes(listWithManyBlogs)
     expect(result).toBe(36)
   })
@@ -93,9 +90,7 @@ describe('total likes', () => {
 
 describe('favorite blog', () => {
   test('of empty list is NaN', () => {
-    const blogs = []
-
-    const result = listHelper.favoriteBlog(blogs)
+    const result = listHelper.favoriteBlog(listWithNoBlogs)
     expect(result).toEqual(NaN)
   })
 
@@ -117,6 +112,32 @@ describe('favorite blog', () => {
         title: 'Canonical string reduction',
         author: 'Edsger W. Dijkstra',
         likes: 12
+      })
+  })
+})
+
+describe('most blogs', () => {
+  test('of empty list is NaN', () => {
+    const result = listHelper.mostBlogs(listWithNoBlogs)
+    expect(result).toEqual(NaN)
+  })
+
+  test('when list has only one blog equals that', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual(
+      {
+        author: 'Edsger W. Dijkstra',
+        blogs: 1
+      }
+    )
+  })
+
+  test('of a bigger list is calculated right', () => {
+    const result = listHelper.mostBlogs(listWithManyBlogs)
+    expect(result).toEqual(
+      {
+        author: 'Robert C. Martin',
+        blogs: 3
       })
   })
 })
