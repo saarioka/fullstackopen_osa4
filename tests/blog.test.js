@@ -111,7 +111,6 @@ describe('favorite blog', () => {
   })
 
   test('of a bigger list is calculated right', () => {
-
     const result = listHelper.favoriteBlog(listWithManyBlogs)
     expect(result).toEqual(
       {

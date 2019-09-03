@@ -1,3 +1,5 @@
+const lodash = require('lodash')
+
 const dummy = (blogs) => {
   blogs
   return 1
@@ -14,24 +16,15 @@ const totalLikes = (blogs) => {
 const favoriteBlog = (blogs) => {
   if (blogs.length === 0) {
     return NaN
-  } else if (blogs.length === 1) {
-    return {
-      'title' : blogs[0].title,
-      'author': blogs[0].author,
-      'likes': blogs[0].likes
-    }
   }
 
   return blogs.reduce(
     (prev, current) => {
       return (prev.likes > current.likes)
         ? prev
-        : {
-          'title' : current.title,
-          'author': current.author,
-          'likes': current.likes
-        }
+        : lodash.pick(current, ['title', 'author', 'likes'])
     }
+    , lodash.pick(blogs[0], ['title', 'author', 'likes'])
   )
 }
 
