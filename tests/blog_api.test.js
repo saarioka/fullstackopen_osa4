@@ -1,32 +1,17 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-const initialBlogs = [
-  {
-    title: 'React patterns',
-    author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
-    likes: 7,
-  },
-  {
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-  }
-]
-
 beforeEach(async () => {
-  await Blog.deleteMany({})
+  await Blog.deleteMany()
 
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  const blogObjects = helper.initialBlogs
+    .map(blog => new Blog(blog))
+  const promises = blogObjects.map(blog => blog.save())
+  await Promise.all(promises)
 })
 
 test('blogs are returned as json', async () => {
@@ -39,23 +24,95 @@ test('blogs are returned as json', async () => {
 test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
 
-  expect(response.body.length).toBe(initialBlogs.length)
+  expect(response.body.length).toBe(helper.initialBlogs.length)
 })
 
-test('a specific title is within the returned blogs', async () => {
+test('a specific blog is within the returned blogs', async () => {
   const response = await api.get('/api/blogs')
 
   const titles = response.body.map(r => r.title)
 
-  expect(titles).toContain(
-    'React patterns'
-  )
+  expect(titles).toContain('React patterns')
 })
 
-test('blogs have field "id"', async () => {
-  const response = await api.get('/api/blogs')
+test('a valid blog can be added ', async () => {
+  const newBlog = {
+    title: 't',
+    author: 'a',
+    url: 'asd',
+    likes: 1
+  }
 
-  response.body.forEach( (blog) => { expect(blog.id).toBeDefined() })
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(n => n.title)
+  expect(titles).toContain('t')
+})
+
+test('blog without title is not added', async () => {
+  const newBlogNoTitle = {
+    author: 'a',
+    url: 'asd',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogNoTitle)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+})
+
+test('blog without URL is not added', async () => {
+  const newBlogNoURL = {
+    title: 't',
+    author: 'a',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogNoURL)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+})
+
+test('blog without field "likes" is added and set to 0 likes', async () => {
+  const newBlog = {
+    title: 't',
+    author: 'a',
+    url: 'asd',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+
+  expect(blogsAtEnd[blogsAtEnd.length - 1]).toMatchObject({
+    title: 't',
+    author: 'a',
+    url: 'asd',
+    likes: 0
+  })
 })
 
 afterAll(() => {
