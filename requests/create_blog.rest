@@ -1,8 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImtuaW1pIiwiaWQiOiI1ZDc3OWMzN2MxMWI0OTE3MTQwMjA1MGUiLCJpYXQiOjE1NjgxMzQ3Njd9.jrQfz_8IUBSc-NFFmQKuc1HYYkB8EZtHQp62r7VAk8Q
 
 {
-  "title": "otsikko",
+  "title": "otsikko2",
   "author": "tekijä",
   "url": "urli",
   "likes": "9000",
