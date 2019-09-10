@@ -15,7 +15,7 @@ blogsRouter.get('/', async (request, response, next) => {
   try{
     const blog = await Blog
       .find({})
-      .populate('user', { username: 1, name: 1, id: 1})
+      .populate('user', { username: 1, name: 1, id: 1 })
 
     if (blog) {
       response.json(blog)
@@ -31,11 +31,9 @@ blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
   const token = getTokenFrom(request)
-  
-
 
   if (body.title === undefined || body.url === undefined) {
-      response.status(400).end()
+    response.status(400).end()
 
   } else {
     try {
