@@ -5,5 +5,6 @@ Content-Type: application/json
   "title": "otsikko",
   "author": "tekijä",
   "url": "urli",
-  "likes": "9000"
+  "likes": "9000",
+  "user": "5d779c37c11b49171402050e"
 }
